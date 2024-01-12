@@ -1,0 +1,54 @@
+@Library('csm-shared-library') _
+
+pipeline {
+    agent {
+        label "metal-gcp-builder"
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: "10"))
+        timestamps()
+    }
+
+    environment {
+        NAME = getRepoName()
+        VERSION=""
+        PRIMARY_NODE = "${env.NODE_NAME}"
+    }
+
+    stages {
+        stage("Build") {
+            stage("Build Setup") {
+                steps {
+                    lock('docker-image-pull) {
+                        sh "docker pull ${pythonImage}"
+                    }
+                }
+            }
+            stage() {
+                agent {
+                    docker {
+                        label "${PRIMARY_NODE}"
+                        reuseNode true
+                        args = ""
+                        image = "{pythonImage}"
+                    }
+                }
+                environment {
+                    VERSION = sh(returnStdout: true, script: "python3 -m setuptools_scm | sed 's/^v//'").trim()
+                }
+                stage("Build Prep") {
+                    steps {
+                        sh "./runBuildPrep.sh"
+                        sh "python3 -m build"
+                    }
+                }
+            }
+            stage('Publish') {
+                steps {
+                    publishCsmPythonModules(module: env.NAME)
+                }
+            }
+        }
+    }
+}
