@@ -1,0 +1,51 @@
+@Library('csm-shared-library') _
+
+pipeline {
+    agent {
+        docker {
+            label "metal-gcp-builder"
+            image "arti.dev.cray.com/dstbuildenv-docker-master-local/cray-sle15sp2_build_environment:latest"
+            args "-u root"
+        }
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: "10"))
+        timestamps()
+    }
+
+    environment {
+        NAME = "vtds-base"
+        DESCRIPTION = "Base Python libraries for vTDS Modules"
+        VERSION=sh(returnStdout: true, script: "python3 -m setuptools_csm").trim()
+        IS_STABLE = getBuildIsStable()
+    }
+
+    stages {
+        stage("Build Prep") {
+            steps {
+                sh "./runBuildPrep.sh"
+            }
+        }
+
+        stage("Build") {
+            steps {
+                sh "pip install -q build"
+                sh "python3 -m build"
+            }
+        }
+
+        stage('Publish') {
+            steps {
+                publishCsmPythonModules(module: env.NAME, isStable: env.IS_STABLE)
+            }
+        }
+    }
+
+    post {
+        always {
+            // Own files so jenkins can clean them up later
+            postChownFiles()
+        }
+    }
+}
