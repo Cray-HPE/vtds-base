@@ -17,7 +17,7 @@ pipeline {
     environment {
         NAME = "vtds-base"
         DESCRIPTION = "Base Python libraries for vTDS Modules"
-        VERSION=sh(returnStdout: true, script: "python3 -m setuptools_csm").trim()
+        VERSION=sh(returnStdout: true, script: "python3 -m setuptools_scm").trim()
         IS_STABLE = getBuildIsStable()
     }
 
