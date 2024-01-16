@@ -22,19 +22,20 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-export PATH="${PATH}:~/.local/bin"
-if ! command -v pip3 > /dev/null; then
-    easy_install-3.8 pip || easy_install-3.8 pip || easy_install pip
-fi
+set -x
+export PATH="${PATH}:${HOME}/.local/bin"
+set +x
 pip3 install --upgrade pip
 pip3 install --upgrade --no-use-pep517 nox
 pip3 install --upgrade wheel
+
 hash -r   # invalidate hash tables since we may have moved things around
+pip3 install --ignore-installed virtualenv
 pip3 install --ignore-installed -r requirements-style.txt
 pip3 install --ignore-installed -r requirements-lint.txt
 pip3 install --ignore-installed -r requirements-test.txt
 pip3 install --ignore-installed build
-pip3 install --ignore-installed nox
+hash -r   # invalidate hash tables since we may have moved things around
 
 find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 

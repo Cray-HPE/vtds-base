@@ -58,8 +58,7 @@ def style(session):
                '--config=.pycodestyle',
                'vtds_base']
     if 'prod' not in session.posargs:
-        run_cmd.append('--ignore=')
-        run_cmd.append('tests')
+        run_cmd.append('--ignore=tests')
 
     if session.python:
         session.install('-r', 'requirements-style.txt')
