@@ -77,7 +77,7 @@ pipeline {
                     }
                 }
 
-                stage('Build') {
+                stage('Build: module build') {
                     agent {
                         docker {
                             label "${PRIMARY_NODE}"
@@ -99,7 +99,7 @@ pipeline {
                     }
                 }
 
-                stage('Publish') {
+                stage('Build: publish') {
                     agent {
                         docker {
                             label "${PRIMARY_NODE}"
@@ -111,7 +111,10 @@ pipeline {
 
                     steps {
                         script {
-                            publishCsmPythonModules(module: env.NAME)
+                            publishCsmPythonModules(
+                                module: env.NAME,
+                                isStable: isStable
+                            )
                          }
                     }
                 }
