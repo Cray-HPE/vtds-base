@@ -27,4 +27,12 @@ from .errors import (
     ContextualError,
     UsageError
 )
-from .config_operations import merge_configs
+from .config_operations import (
+    merge_configs,
+    expand_inheritance
+)
+
+from .template_operations import (
+    render_template_file,
+    render_templated_tree
+)

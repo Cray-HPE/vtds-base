@@ -24,6 +24,8 @@
 
 """
 
+from .errors import ContextualError
+
 
 def merge_configs(base, overlay):
     """Given a base configuration specified in 'base', merge an
@@ -87,3 +89,58 @@ def merge_configs(base, overlay):
 
     # new_config now contains the merged dictionary, return it.
     return new_config
+
+
+def expand_inheritance(configs, config_name, ancestry=None, top_config=None):
+    """Within a set of configurations contained in 'configs', perform an
+    inheritace expansion of the configuration named 'config_name' that produces
+    a fully populated configuation taking into account all of the
+    ancestor configurations of 'config_name', and return the data structure
+    containing the expanded configuration.
+
+    The 'ancestry' and 'top_config' arguments are used internally during
+    recursion and should not be set by the external caller.
+
+    """
+    # Set up an 'ancestry' array consisting of the config names we
+    # have visited in the inheritance chain so we can tell if we hit
+    # an inheritance loop.
+    if ancestry is None:
+        ancestry = []
+    ancestry.append(config_name)
+    if top_config is None:
+        top_config = config_name
+    try:
+        config = configs[config_name]
+    except KeyError as err:
+        raise ContextualError(
+            "cannot find config sub-tree named '%s' in config list %s" % (
+                config_name, str(configs.keys())
+            )
+        ) from err
+    if 'pure_base_class' not in config:
+        # Make sure 'config' does not inherit the 'pure_base_class'
+        # designation from any of its parent classes.
+        config['pure_base_class'] = False
+    parent = config.get('parent_class', None)
+    if parent is None:
+        # If this config does not inherit from anywhere, then we are
+        # done, just return the content of the config.
+        return config
+    if parent in ancestry:
+        # We have already seen 'parent' in the inheritiance chain,
+        # this is a loop, so raise an exception.
+        raise ContextualError(
+            "the inheritance chain for '%s' has a circular dependency "
+            "on '%s' - %s" % (
+                top_config, parent, str(ancestry + [parent])
+            )
+        )
+    parent_config = expand_inheritance(configs, parent, ancestry, top_config)
+    # Merge the current config on top of the parent(s) that have
+    # already been expanded, then set 'parent_class' to None because
+    # this config is now fully expanded and does not need (or want)
+    # further expansion due to inheritance.
+    config = merge_configs(parent_config, config)
+    config['parent_class'] = None
+    return config
