@@ -30,6 +30,7 @@ pip3 install --upgrade --no-use-pep517 nox
 pip3 install --upgrade wheel
 
 hash -r   # invalidate hash tables since we may have moved things around
+pip3 install --ignore-installed setuptools_scm[toml]
 pip3 install --ignore-installed virtualenv
 pip3 install --ignore-installed -r requirements-style.txt
 pip3 install --ignore-installed -r requirements-lint.txt
