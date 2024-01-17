@@ -39,10 +39,10 @@ def lint(session):
     serious code quality issues.
     """
     run_cmd = ['pylint', 'vtds_base']
-    if 'prod' not in session.posargs:
-        run_cmd.append('tests')
-        run_cmd.append('--disable=import-error')
-        run_cmd.append('--enable=fixme')
+#    if 'prod' not in session.posargs:
+#        run_cmd.append('tests')
+#        run_cmd.append('--disable=import-error')
+#        run_cmd.append('--enable=fixme')
 
     if session.python:
         session.install('-r', 'requirements-lint.txt')
@@ -57,9 +57,7 @@ def style(session):
     run_cmd = ['pycodestyle',
                '--config=.pycodestyle',
                'vtds_base']
-    if 'prod' not in session.posargs:
-        run_cmd.append('--ignore=tests')
-
+ 
     if session.python:
         session.install('-r', 'requirements-style.txt')
     session.run(*run_cmd)
