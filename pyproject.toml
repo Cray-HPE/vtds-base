@@ -37,7 +37,7 @@ classifiers = [
 ]
 description = 'Cray management and workflow tool'
 dependencies = [
-    # Fill this out as the dependencies become known
+    "jinja2",
 ]
 dynamic = ['version']
 maintainers = [
