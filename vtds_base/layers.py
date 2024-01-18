@@ -20,23 +20,23 @@
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
-"""Init script for the vTDS base library
+"""Tools for installing and manipulating vTDS layers.
 
 """
-from .errors import (
-    ContextualError,
-    UsageError
-)
-from .config_operations import (
-    merge_configs,
-    expand_inheritance
-)
 
-from .template_operations import (
-    render_template_file,
-    render_templated_tree
-)
+import os
 
-from .layers import (
-    layer_install_python
-)
+
+def layer_install_python(paths):
+    """Install the python library search path(s) for a layer into
+    PYTHONPATH so that they can be imported as needed. All paths are
+    assumed to be relative to the current working directory of the
+    caller.
+
+    """
+    cwd = os.getcwd()
+    pythonpath = os.environ.get("PYTHONPATH", "")
+    for path in paths:
+        pythonpath += ':' if pythonpath else ""
+        pythonpath += "%s/%s" % (cwd, path)
+    os.environ["PYTHONPATH"] = pythonpath
