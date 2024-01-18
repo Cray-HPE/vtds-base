@@ -25,18 +25,59 @@
 """
 
 import os
+import sys
 
 
-def layer_install_python(paths):
-    """Install the python library search path(s) for a layer into
-    PYTHONPATH so that they can be imported as needed. All paths are
-    assumed to be relative to the current working directory of the
-    caller.
+class Layer:
+    """The class representation of a vTDS layer, used for setting up
+    the python environment and obtaining default configuration and so
+    forth.
 
     """
-    cwd = os.getcwd()
-    pythonpath = os.environ.get("PYTHONPATH", "")
-    for path in paths:
+    def __init__(self, layer_root, python_paths, config_path):
+        """Constructor. The 'layer_root' argument is the absolute path
+        at which the root of the layer's contents can be found. The
+        'python_paths' argument is the list of relative paths within
+        the layer at which python modules implementing the layer can
+        be found. The `config_path` argument is the relative path in
+        the layer at which the default config for the layer is found.
+
+        """
+        cwd = os.getcwd()
+        self.layer_root = layer_root
+        self.python_paths = ["%s/%s" % (path, cwd) for path in python_paths]
+        self.config_path = config_path
+
+    def install_python_paths(self):
+        """Install the python library search path(s) for the layer into
+        sys.path so that they can be imported as needed.
+
+        """
+        # Make sure we only add paths that are not already in
+        # 'sys.path'. We could use sets but they aren't ordered, and
+        # order kind of matters.
+        unique_paths = [
+            path
+            for path in self.python_paths
+            if path not in sys.path
+        ]
+        sys.path += unique_paths
+
+    def export_python_paths(self):
+        """Export a PYTHONPATH variable containing (at least) the
+        paths found in 'self.python_paths' for use by sub-processes.
+
+        """
+        pythonpath = os.environ.get("PYTHONPATH", "")
+        # Make sure we only populate 'PYTHONPATH' with non-duplicate
+        # paths. We could use sets but they aren't ordered, and order
+        # kind of matters here.
+        pparray = pythonpath.split(':')
+        unique_paths = [
+            path
+            for path in self.python_paths
+            if path not in pparray
+        ]
         pythonpath += ':' if pythonpath else ""
-        pythonpath += "%s/%s" % (cwd, path)
-    os.environ["PYTHONPATH"] = pythonpath
+        pythonpath += ':'.join(unique_paths)
+        os.putenv("PYTHONPATH", pythonpath)

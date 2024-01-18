@@ -38,5 +38,5 @@ from .template_operations import (
 )
 
 from .layers import (
-    layer_install_python
+    Layer
 )
