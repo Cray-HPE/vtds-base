@@ -57,14 +57,15 @@ ci = [
 docs = [
 ]
 style = [
-    'pycodestyle',
+    'pycodestyle~=2.11',
 ]
 lint = [
     'pylint~=2.15',
 ]
 test = [
     'pytest~=7.3.1',
-    'pytest-cov~=4.1.0',
+    'pytest-cov~=4.1',
+    'coverage~=7.4',
 ]
 
 # Defines which folders belong to our package.
