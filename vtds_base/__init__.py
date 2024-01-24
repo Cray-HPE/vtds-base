@@ -38,5 +38,6 @@ from .template_operations import (
 )
 
 from .layers import (
-    Layer
+    Layer,
+    FullStack
 )
