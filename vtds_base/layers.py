@@ -137,22 +137,22 @@ class FullStack:
         """Accessor for the applicaiton layer.
 
         """
-        return self.application()
+        return self.application
 
     def get_cluster(self):
         """Accessor for the cluster layer.
 
         """
-        return self.cluster()
+        return self.cluster
 
     def get_platform(self):
         """Accessor for the platform layer.
 
         """
-        return self.platform()
+        return self.platform
 
     def get_provider(self):
         """Accessor for the provider layer.
 
         """
-        return self.provider()
+        return self.provider

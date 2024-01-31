@@ -25,6 +25,7 @@
 """
 from .errors import (
     ContextualError,
+    LoggedContextualError,
     UsageError
 )
 from .config_operations import (

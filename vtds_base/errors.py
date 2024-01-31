@@ -33,6 +33,22 @@ class ContextualError(Exception):  # pylint: disable=too-few-public-methods
     """
 
 
+# pylint: disable=too-few-public-methods
+class LoggedContextualError(Exception):
+    """Exception to report failures seen and contextualized within the
+    application providing output and error log file pathnames for more
+    detailed error reporting.
+
+    """
+    def __init__(self, msg, output, error):
+        """Constructor.
+
+        """
+        self.output = output
+        self.error = error
+        super().__init__(msg)
+
+
 class UsageError(Exception):  # pylint: disable=too-few-public-methods
     """Exception to report usage errors
 

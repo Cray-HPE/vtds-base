@@ -26,7 +26,10 @@ templated files.
 """
 
 from glob import glob
-from jinja2 import Template
+from jinja2 import (
+    Template,
+    TemplateError
+)
 
 from .errors import ContextualError
 
@@ -41,14 +44,19 @@ def render_template_file(path, data):
     try:
         with open(path, 'r', encoding="UTF-8") as template_file:
             template_data = template_file.read()
+            template = Template(template_data)
+            rendered = template.render(data)
     except OSError as err:
         raise ContextualError(
             "cannot read Jinja template file %s: %s" % (
                 path, str(err)
             )
         ) from err
-    template = Template(template_data)
-    rendered = template.render(data)
+    except TemplateError as err:
+        raise ContextualError(
+            "error rendering template file '%s' - %s" %
+            (path, str(err))
+        ) from err
     try:
         with open(path, 'w', encoding="UTF-8") as output_file:
             output_file.write(rendered)
@@ -70,6 +78,6 @@ def render_templated_tree(patterns, data, build_dir):
     # found in the build tree matching that pattern and render each
     # one.
     for pattern in patterns:
-        paths = glob("%s/**/%s" % (build_dir, pattern))
+        paths = glob("%s/**/%s" % (build_dir, pattern), recursive=True)
         for path in paths:
             render_template_file(path, data)
