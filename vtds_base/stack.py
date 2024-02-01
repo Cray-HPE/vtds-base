@@ -27,6 +27,7 @@
 import os
 import importlib
 from .errors import ContextualError
+from .config_operations import merge_configs
 
 
 class Layer:
@@ -147,6 +148,23 @@ class VTDSStack:
         )
         return [api for api in api_list if api is not None]
 
+    def __active_configs__(self, config_list=None):
+        """Get the list of active base configs in the stack. If
+        'config_list' is provided, then get the configs in the order
+        specified. Otherwise, get them in the following order:
+        'provider', 'platform', 'cluster', 'application'.
+
+        """
+        config_list = (
+            [
+                self.provider.base_config if self.provider else None,
+                self.platform.base_config if self.platform else None,
+                self.cluster.base_config if self.cluster else None,
+                self.application.base_config if self.application else None,
+            ] if config_list is None else config_list
+        )
+        return [config for config in config_list if config is not None]
+
     def initialize(self, config, build_dir):
         """Initialize all of the layers rooted at 'build_dir' and
         supplying the full vTDS configuration found in 'config'. Each
@@ -196,13 +214,37 @@ class VTDSStack:
         # Work from top to bottom instead of bottom to top to avoid
         # pulling a dependency out from under an upper layer.
         api_list = [
-                self.provider.get_api() if self.provider else None,
-                self.platform.get_api() if self.platform else None,
-                self.cluster.get_api() if self.cluster else None,
                 self.application.get_api() if self.application else None,
+                self.cluster.get_api() if self.cluster else None,
+                self.platform.get_api() if self.platform else None,
+                self.provider.get_api() if self.provider else None,
         ]
         for api in self.__active_apis__(api_list):
             api.remove()
+
+    def get_base_config(self):
+        """Collate and merge the base configurations of all of the
+        layers that are present into a single base configuration and
+        return it to the caller as a configuration collection for use
+        in constructing a config to deploy a vTDS.
+
+        """
+        ret = {}
+        configs = self.__active_configs__()
+        for config in configs:
+            ret = merge_configs(ret, config.get_base_config())
+        return ret
+
+    def get_test_config(self):
+        """Get a base configuration and then apply all of the layer
+        test overlays to it to get a test configuration.
+
+        """
+        base_config = self.get_base_config()
+        configs = self.__active_configs__()
+        for config in configs:
+            base_config = merge_configs(base_config, config.get_test_overlay())
+        return base_config
 
     def get_application_api(self):
         """Accessor for the application layer API.
