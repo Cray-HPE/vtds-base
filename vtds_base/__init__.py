@@ -38,7 +38,6 @@ from .template_operations import (
     render_templated_tree
 )
 
-from .layers import (
-    Layer,
-    FullStack
+from .stack import (
+    VTDSStack
 )
