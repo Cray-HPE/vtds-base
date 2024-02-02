@@ -24,6 +24,7 @@
 wrapper code around main()
 
 """
+import sys
 
 
 class ContextualError(Exception):  # pylint: disable=too-few-public-methods
@@ -53,3 +54,34 @@ class UsageError(Exception):  # pylint: disable=too-few-public-methods
     """Exception to report usage errors
 
     """
+
+
+def usage(usage_msg, err=None):
+    """Print a usage message and exit with an error status.
+
+    """
+    if err:
+        sys.stderr.write("%s\n" % err)
+    sys.stderr.write("%s\n" % usage_msg)
+    sys.exit(1)
+
+
+def error_msg(msg):
+    """Format an error message and print it to stderr.
+
+    """
+    sys.stderr.write("ERROR: %s\n" % msg)
+
+
+def warning_msg(msg):
+    """Format a warning and print it to stderr.
+
+    """
+    sys.stderr.write("WARNING: %s\n" % msg)
+
+
+def info_msg(msg):
+    """Format an informational message and print it to stderr.
+
+    """
+    sys.stderr.write("INFO: %s\n" % msg)

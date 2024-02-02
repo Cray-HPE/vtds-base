@@ -20,27 +20,40 @@
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
-"""Init script for the vTDS base library
+"""Entrypoint handling.
 
 """
-from .entrypoint import (
-    entrypoint
-)
+import sys
 from .errors import (
     ContextualError,
     LoggedContextualError,
-    UsageError
-)
-from .config_operations import (
-    merge_configs,
-    expand_inheritance
+    UsageError,
+    usage,
+    error_msg
 )
 
-from .template_operations import (
-    render_template_file,
-    render_templated_tree
-)
 
-from .stack import (
-    VTDSStack
-)
+def entrypoint(usage_msg, main):
+    """Generic entrypoint function. This sets up command line
+    arguments for the invocation of a 'main' function and takes care
+    of handling any vTDS exceptions that are raised to report
+    errors. Other exceptions are allowed to pass to the caller for
+    handling.
+
+    """
+    try:
+        main(sys.argv[1:])
+    except ContextualError as err:
+        error_msg(str(err))
+        sys.exit(1)
+    except LoggedContextualError as err:
+        error_msg(
+            "%s\nStandard Output Log: '%s'\nStandard Error Log: '%s'" % (
+                str(err),
+                err.output,
+                err.error
+            )
+        )
+        sys.exit(1)
+    except UsageError as err:
+        usage(usage_msg, str(err))
