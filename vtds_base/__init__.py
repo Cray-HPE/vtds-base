@@ -36,6 +36,10 @@ from .config_operations import (
     expand_inheritance
 )
 
+from .base_config import (
+    BaseConfiguration
+)
+
 from .template_operations import (
     render_template_file,
     render_templated_tree
