@@ -26,6 +26,10 @@
 
 import os
 import importlib
+from yaml import (
+    YAMLError,
+    safe_load
+)
 from .errors import ContextualError
 from .config_operations import merge_configs
 
@@ -36,14 +40,15 @@ class Layer:
     data.
 
     """
-    def __init__(self, module_name):
+    def __init__(self, module_name, is_core=False):
         """Constructor. The 'module_name' is used to import the layer
         and install the layer's API and base configuration implementation.
 
         """
+        self.is_core = is_core
         try:
             module = importlib.import_module(module_name)
-            self.layer_api_class = module.LayerAPI
+            self.layer_api_class = module.LayerAPI if not is_core else None
             self.base_config = module.BaseConfig()
             self.layer_api = None
         except ImportError as err:
@@ -66,6 +71,8 @@ class Layer:
         specific layer.
 
         """
+        if self.is_core:
+            return
         self.layer_api = self.layer_api_class(stack, config, build_dir)
 
     def get_api(self):
@@ -76,12 +83,12 @@ class Layer:
         return self.layer_api
 
 
-def __construct_layer__(module_name):
+def __construct_layer__(module_name, is_core=False):
     """Given a module name that could be None or empty, return a Layer
     based on that module name or None if the name was None or empty.
 
     """
-    return Layer(module_name) if module_name else None
+    return Layer(module_name, is_core) if module_name else None
 
 
 class VTDSStack:
@@ -94,7 +101,8 @@ class VTDSStack:
             application_name=None,
             cluster_name=None,
             platform_name=None,
-            provider_name=None
+            provider_name=None,
+            core_name=None
     ):
         """Constructor. Create a stack using the Python module names
         for the application, cluster, platform and provider layers
@@ -106,6 +114,8 @@ class VTDSStack:
         self.cluster = __construct_layer__(cluster_name)
         self.platform = __construct_layer__(platform_name)
         self.provider = __construct_layer__(provider_name)
+        core_name = "vtds_core" if not core_name else core_name
+        self.core = __construct_layer__(core_name, is_core=True)
 
     def __init_layer__(self, name, layer, config, build_dir):
         """Initialize a layer where 'name' identifies the name of the
@@ -161,6 +171,7 @@ class VTDSStack:
                 self.platform.base_config if self.platform else None,
                 self.cluster.base_config if self.cluster else None,
                 self.application.base_config if self.application else None,
+                self.core.base_config if self.core else None,
             ] if config_list is None else config_list
         )
         return [config for config in config_list if config is not None]
@@ -245,6 +256,25 @@ class VTDSStack:
         for config in configs:
             base_config = merge_configs(base_config, config.get_test_overlay())
         return base_config
+
+    def compose_config(self, overlay_path=None):
+        """Given a path to a YAML configuration overlay file, read in the file
+        and merge it on top of the base config for the stack. If no pathname is
+        given, just return the stack's base configuration.
+
+        """
+        overlay = {}
+        if overlay_path:
+            try:
+                with open(overlay_path, 'r', encoding='UTF-8') as overlay_file:
+                    overlay = safe_load(overlay_file)
+            except (OSError, YAMLError) as err:
+                raise ContextualError(
+                    "error loading configuration overlay '%s' - %s" % (overlay_path, str(err))
+                ) from err
+        base_config = self.get_base_config()
+        config = merge_configs(base_config, overlay)
+        return config
 
     def get_application_api(self):
         """Accessor for the application layer API.
