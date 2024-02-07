@@ -24,7 +24,8 @@
 
 """
 
-import os
+from os import makedirs
+from os.path import join as path_join
 import importlib
 from yaml import (
     YAMLError,
@@ -131,9 +132,9 @@ class VTDSStack:
             # No such layer present, this is not an error, but we
             # don't want to go any further.
             return
-        layer_build_dir = os.path.join(build_dir, name)
+        layer_build_dir = path_join(build_dir, name)
         try:
-            os.makedirs(layer_build_dir, 0o700, True)
+            makedirs(layer_build_dir, 0o700, True)
         except OSError as err:
             raise ContextualError(
                 "failed to create build directory for layer "
@@ -183,6 +184,7 @@ class VTDSStack:
         directory tree.
 
         """
+        self.__init_layer__("core", self.core, config, build_dir)
         self.__init_layer__("application", self.application, config, build_dir)
         self.__init_layer__("cluster", self.cluster, config, build_dir)
         self.__init_layer__("platform", self.platform, config, build_dir)

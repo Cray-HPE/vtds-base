@@ -24,7 +24,7 @@
 
 """
 
-import os.path
+from os.path import join as path_join
 import yaml
 from .errors import ContextualError
 
@@ -56,7 +56,7 @@ class BaseConfiguration:
         overall vTDS configuration.
 
         """
-        config = os.path.join(self.config_dir, self.config_file)
+        config = path_join(self.config_dir, self.config_file)
         try:
             with open(config, 'r', encoding='UTF-8') as config_stream:
                 return yaml.safe_load(config_stream)
@@ -82,7 +82,7 @@ class BaseConfiguration:
         to users.
 
         """
-        config = os.path.join(self.config_dir, self.config_file)
+        config = path_join(self.config_dir, self.config_file)
         try:
             with open(config, 'r', encoding='UTF-8') as config_stream:
                 return config_stream.read()
@@ -100,7 +100,7 @@ class BaseConfiguration:
         configurations for testing with this provider layer.
 
         """
-        config = os.path.join(self.config_dir, self.test_overlay)
+        config = path_join(self.config_dir, self.test_overlay)
         try:
             with open(config, 'r', encoding='UTF-8') as config_stream:
                 return yaml.safe_load(config_stream)
