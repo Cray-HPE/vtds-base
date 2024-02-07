@@ -20,35 +20,29 @@
 # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
-"""Entrypoint handling.
+"""Logfile related tools
 
 """
-import sys
-from .errors import (
-    ContextualError,
-    UsageError,
-    usage,
-    error_msg
-)
+from contextlib import contextmanager
+from .errors import ContextualError
 
 
-def entrypoint(usage_msg, main):
-    """Generic entrypoint function. This sets up command line
-    arguments for the invocation of a 'main' function and takes care
-    of handling any vTDS exceptions that are raised to report
-    errors. Other exceptions are allowed to pass to the caller for
-    handling.
+@contextmanager
+def logfile(path, mode='w', encoding='UTF-8',  **kwargs):
+    """Open a logfile and yield the resulting stream if 'path' is not
+       None, otherwise yield None.
 
     """
     try:
-        main(sys.argv[1:])
-    except ContextualError as err:
-        msg = str(err) + '\n'
-        if err.output:
-            msg += "Standard Output Log: '%s'\n" % err.output
-        if err.error:
-            msg += "Standard Error Log: '%s'\n" % err.error
-        error_msg(msg)
-        sys.exit(1)
-    except UsageError as err:
-        usage(usage_msg, str(err))
+        stream = open(
+            path, mode, encoding=encoding, **kwargs
+        ) if path is not None else None
+    except OSError as err:
+        raise ContextualError(
+            "error opening log file '%s' - %s" % (path, str(err))
+        ) from err
+    try:
+        yield stream
+    finally:
+        if stream is not None:
+            stream.close()

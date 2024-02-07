@@ -28,7 +28,6 @@ from .entrypoint import (
 )
 from .errors import (
     ContextualError,
-    LoggedContextualError,
     UsageError
 )
 from .config_operations import (
@@ -47,4 +46,7 @@ from .template_operations import (
 
 from .stack import (
     VTDSStack
+)
+from .logs import (
+    logfile
 )

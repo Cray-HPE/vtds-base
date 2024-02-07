@@ -27,21 +27,14 @@ wrapper code around main()
 import sys
 
 
-class ContextualError(Exception):  # pylint: disable=too-few-public-methods
-    """Exception to report failures seen and contextualized within the
-    application.
-
-    """
-
-
 # pylint: disable=too-few-public-methods
-class LoggedContextualError(Exception):
+class ContextualError(Exception):
     """Exception to report failures seen and contextualized within the
     application providing output and error log file pathnames for more
     detailed error reporting.
 
     """
-    def __init__(self, msg, output, error):
+    def __init__(self, msg, output=None, error=None):
         """Constructor.
 
         """
