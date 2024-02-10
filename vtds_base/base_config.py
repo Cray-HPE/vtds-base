@@ -25,8 +25,8 @@
 """
 
 from os.path import join as path_join
-import yaml
 from .errors import ContextualError
+from .config_operations import read_config
 
 
 # pylint: disable=too-few-public-methods
@@ -57,24 +57,18 @@ class BaseConfiguration:
 
         """
         config = path_join(self.config_dir, self.config_file)
-        try:
-            with open(config, 'r', encoding='UTF-8') as config_stream:
-                return yaml.safe_load(config_stream)
-        except OSError as err:
-            raise ContextualError(
-                "cannot open %s base config file '%s' - %s" % (
-                    self.description,
-                    config, str(err)
-                )
-            ) from err
-        except yaml.YAMLError as err:
-            raise ContextualError(
-                "error parsing %s base config file "
-                "'%s' - %s" % (
-                    self.description,
-                    config, str(err)
-                )
-            ) from err
+        description = self.description + " base configuration"
+        return read_config(config, description)
+
+    def get_test_overlay(self):
+        """Retrieve a pre-defined test overlay configuration in the
+        form of a python data structure for use in composing vTDS
+        configurations for testing with this provider layer.
+
+        """
+        config = path_join(self.config_dir, self.test_overlay)
+        description = self.description + " test configuration overlay"
+        return read_config(config, description)
 
     def get_base_config_text(self):
         """Retrieve the text of the base configuration file as a text
@@ -89,33 +83,6 @@ class BaseConfiguration:
         except OSError as err:
             raise ContextualError(
                 "cannot open %s base config file '%s' - %s" % (
-                    self.description,
-                    config, str(err)
-                )
-            ) from err
-
-    def get_test_overlay(self):
-        """Retrieve a pre-defined test overlay configuration in the
-        form of a python data structure for use in composing vTDS
-        configurations for testing with this provider layer.
-
-        """
-        config = path_join(self.config_dir, self.test_overlay)
-        try:
-            with open(config, 'r', encoding='UTF-8') as config_stream:
-                return yaml.safe_load(config_stream)
-        except OSError as err:
-            raise ContextualError(
-                "cannot open %s test config overlay file "
-                "'%s' - %s" % (
-                    self.description,
-                    config, str(err)
-                )
-            ) from err
-        except yaml.YAMLError as err:
-            raise ContextualError(
-                "error parsing %s test config overlay file "
-                "'%s' - %s" % (
                     self.description,
                     config, str(err)
                 )

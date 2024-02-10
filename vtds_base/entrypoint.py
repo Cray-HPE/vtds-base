@@ -43,12 +43,7 @@ def entrypoint(usage_msg, main):
     try:
         main(sys.argv[1:])
     except ContextualError as err:
-        msg = str(err) + '\n'
-        if err.output:
-            msg += "Standard Output Log: '%s'\n" % err.output
-        if err.error:
-            msg += "Standard Error Log: '%s'\n" % err.error
-        error_msg(msg)
+        error_msg(str(err))
         sys.exit(1)
     except UsageError as err:
         usage(usage_msg, str(err))

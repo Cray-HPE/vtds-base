@@ -42,6 +42,28 @@ class ContextualError(Exception):
         self.error = error
         super().__init__(msg)
 
+    def __str__(self):
+        """String conversion
+
+        """
+        result = super().__str__()
+        result += (
+            " ["
+        ) if self.output is not None or self.error is not None else ""
+        result += (
+            "standard output log in: '%s'" % self.output
+        ) if self.output is not None else ""
+        result += (
+            ", "
+        ) if self.output is not None and self.error is not None else ""
+        result += (
+            "standard error log in: '%s'" % self.error
+        ) if self.error is not None else ""
+        result += (
+            "]"
+        ) if self.output is not None or self.error is not None else ""
+        return result
+
 
 class UsageError(Exception):  # pylint: disable=too-few-public-methods
     """Exception to report usage errors

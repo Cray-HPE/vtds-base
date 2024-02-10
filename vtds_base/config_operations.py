@@ -24,6 +24,10 @@
 
 """
 
+from yaml import (
+    YAMLError,
+    safe_load
+)
 from .errors import ContextualError
 
 
@@ -144,3 +148,21 @@ def expand_inheritance(configs, config_name, ancestry=None, top_config=None):
     config = merge_configs(parent_config, config)
     config['parent_class'] = None
     return config
+
+
+def read_config(path, description="configuration"):
+    """Read in a YAML configuration from a file.
+
+    """
+    try:
+        with open(path, 'r', encoding='UTF-8') as config_stream:
+            return safe_load(config_stream)
+    except OSError as err:
+        raise ContextualError(
+            "cannot open %s '%s' - %s" % (description, path, str(err))
+        ) from err
+    except YAMLError as err:
+        raise ContextualError(
+            "error parsing %s "
+            "'%s' - %s" % (description, path, str(err))
+        ) from err

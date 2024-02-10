@@ -31,6 +31,7 @@ from .errors import (
     UsageError
 )
 from .config_operations import (
+    read_config,
     merge_configs,
     expand_inheritance
 )
