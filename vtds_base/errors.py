@@ -71,13 +71,31 @@ class UsageError(Exception):  # pylint: disable=too-few-public-methods
     """
 
 
+def write_out(string):
+    """Write an arbitrary string on stdout and make sure it is
+    flushed.
+
+    """
+    sys.stdout.write(string)
+    sys.stdout.flush()
+
+
+def write_err(string):
+    """Write an arbitrary string on stderr and make sure it is
+    flushed.
+
+    """
+    sys.stderr.write(string)
+    sys.stderr.flush()
+
+
 def usage(usage_msg, err=None):
     """Print a usage message and exit with an error status.
 
     """
     if err:
-        sys.stderr.write("%s\n" % err)
-    sys.stderr.write("%s\n" % usage_msg)
+        write_err("%s\n" % err)
+    write_err("%s\n" % usage_msg)
     sys.exit(1)
 
 
@@ -85,18 +103,18 @@ def error_msg(msg):
     """Format an error message and print it to stderr.
 
     """
-    sys.stderr.write("ERROR: %s\n" % msg)
+    write_err("ERROR: %s\n" % msg)
 
 
 def warning_msg(msg):
     """Format a warning and print it to stderr.
 
     """
-    sys.stderr.write("WARNING: %s\n" % msg)
+    write_err("WARNING: %s\n" % msg)
 
 
 def info_msg(msg):
     """Format an informational message and print it to stderr.
 
     """
-    sys.stderr.write("INFO: %s\n" % msg)
+    write_err("INFO: %s\n" % msg)

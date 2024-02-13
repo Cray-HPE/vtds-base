@@ -28,7 +28,12 @@ from .entrypoint import (
 )
 from .errors import (
     ContextualError,
-    UsageError
+    UsageError,
+    write_out,
+    write_err,
+    error_msg,
+    warning_msg,
+    info_msg
 )
 from .config_operations import (
     read_config,
