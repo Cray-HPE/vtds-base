@@ -48,7 +48,7 @@ class ContextualError(Exception):
         """
         result = super().__str__()
         files = isinstance(self.output, str) or isinstance(self.error, str)
-        result += " [" if files  else ""
+        result += " [" if files else ""
         result += (
             "standard output log in: '%s'" % self.output
         ) if isinstance(self.output, str) else ""
