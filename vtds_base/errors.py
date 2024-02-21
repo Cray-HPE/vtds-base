@@ -47,21 +47,20 @@ class ContextualError(Exception):
 
         """
         result = super().__str__()
-        result += (
-            " ["
-        ) if self.output is not None or self.error is not None else ""
+        files = isinstance(self.output, str) or isinstance(self.error, str)
+        result += " [" if files  else ""
         result += (
             "standard output log in: '%s'" % self.output
-        ) if self.output is not None else ""
+        ) if isinstance(self.output, str) else ""
         result += (
             ", "
-        ) if self.output is not None and self.error is not None else ""
+        ) if files else ""
         result += (
             "standard error log in: '%s'" % self.error
-        ) if self.error is not None else ""
+        ) if isinstance(self.error, str) else ""
         result += (
             "]"
-        ) if self.output is not None or self.error is not None else ""
+        ) if files else ""
         return result
 
 
@@ -94,7 +93,7 @@ def usage(usage_msg, err=None):
 
     """
     if err:
-        write_err("%s\n" % err)
+        write_err("ERROR: %s\n" % err)
     write_err("%s\n" % usage_msg)
     sys.exit(1)
 

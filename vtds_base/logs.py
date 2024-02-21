@@ -28,21 +28,24 @@ from .errors import ContextualError
 
 
 @contextmanager
-def logfile(path, mode='w', encoding='UTF-8',  **kwargs):
+def logfile(lfile, mode='w', encoding='UTF-8',  **kwargs):
     """Open a logfile and yield the resulting stream if 'path' is not
        None, otherwise yield None.
 
     """
     try:
-        stream = open(
-            path, mode, encoding=encoding, **kwargs
-        ) if path is not None else None
+        if isinstance(lfile, str) or lfile is None:
+            stream = open(
+                lfile, mode, encoding=encoding, **kwargs
+            ) if lfile is not None else None
+        else:
+            stream = lfile
     except OSError as err:
         raise ContextualError(
-            "error opening log file '%s' - %s" % (path, str(err))
+            "error opening log file '%s' - %s" % (lfile, str(err))
         ) from err
     try:
         yield stream
     finally:
-        if stream is not None:
+        if isinstance(lfile, str) and stream is not None:
             stream.close()
