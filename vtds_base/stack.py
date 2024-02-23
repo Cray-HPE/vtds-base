@@ -27,10 +27,6 @@
 from os import makedirs
 from os.path import join as path_join
 import importlib
-from yaml import (
-    YAMLError,
-    safe_load
-)
 from .errors import ContextualError
 from .config_operations import merge_configs
 
@@ -258,25 +254,6 @@ class VTDSStack:
         for config in configs:
             base_config = merge_configs(base_config, config.get_test_overlay())
         return base_config
-
-    def compose_config(self, overlay_path=None):
-        """Given a path to a YAML configuration overlay file, read in the file
-        and merge it on top of the base config for the stack. If no pathname is
-        given, just return the stack's base configuration.
-
-        """
-        overlay = {}
-        if overlay_path:
-            try:
-                with open(overlay_path, 'r', encoding='UTF-8') as overlay_file:
-                    overlay = safe_load(overlay_file)
-            except (OSError, YAMLError) as err:
-                raise ContextualError(
-                    "error loading configuration overlay '%s' - %s" % (overlay_path, str(err))
-                ) from err
-        base_config = self.get_base_config()
-        config = merge_configs(base_config, overlay)
-        return config
 
     def get_application_api(self):
         """Accessor for the application layer API.
