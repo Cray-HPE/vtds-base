@@ -113,6 +113,7 @@ class VTDSStack:
         self.provider = __construct_layer__(provider_name)
         core_name = "vtds_core" if not core_name else core_name
         self.core = __construct_layer__(core_name, is_core=True)
+        self.config = None
 
     def __init_layer__(self, name, layer, config, build_dir):
         """Initialize a layer where 'name' identifies the name of the
@@ -185,6 +186,7 @@ class VTDSStack:
         self.__init_layer__("cluster", self.cluster, config, build_dir)
         self.__init_layer__("platform", self.platform, config, build_dir)
         self.__init_layer__("provider", self.provider, config, build_dir)
+        self.config = config
 
     def prepare(self):
         """Execute the stack 'prepare' phase. This runs the
@@ -243,6 +245,18 @@ class VTDSStack:
         for config in configs:
             ret = merge_configs(ret, config.get_base_config())
         return ret
+
+    def get_final_config(self):
+        """Return the full configuration after all of the overlays
+        have been applied that is given to the layers. This only works
+        after initialize() has been run...
+
+        """
+        if self.config is None:
+            raise ContextualError(
+                "can't request stack configuration before calling initialize()"
+            )
+        return self.config
 
     def get_test_config(self):
         """Get a base configuration and then apply all of the layer
