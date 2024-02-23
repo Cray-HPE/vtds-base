@@ -107,11 +107,11 @@ class VTDSStack:
         'platform_name' and 'provider_name' arguments respectively.
 
         """
+        core_name = "vtds_core" if not core_name else core_name
         self.application = __construct_layer__(application_name)
         self.cluster = __construct_layer__(cluster_name)
         self.platform = __construct_layer__(platform_name)
         self.provider = __construct_layer__(provider_name)
-        core_name = "vtds_core" if not core_name else core_name
         self.core = __construct_layer__(core_name, is_core=True)
         self.config = None
 
@@ -232,6 +232,18 @@ class VTDSStack:
         ]
         for api in self.__active_apis__(api_list):
             api.remove()
+
+    def get_base_config_text(self):
+        """Collate the annotated base configurations of all of the
+        layers that are present into a single YAML string and return
+        it to the caller.
+
+        """
+        ret = ""
+        configs = self.__active_configs__()
+        for config in configs:
+            ret += config.get_base_config_text() + '\n'
+        return ret
 
     def get_base_config(self):
         """Collate and merge the base configurations of all of the
