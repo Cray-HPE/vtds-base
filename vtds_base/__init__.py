@@ -54,5 +54,9 @@ from .stack import (
     VTDSStack
 )
 from .logs import (
+    log_paths,
     logfile
+)
+from .commands import (
+    run
 )
