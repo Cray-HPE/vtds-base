@@ -57,37 +57,6 @@ class LayerAPI(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def shutdown(self, virtual_blade_names=None):
-        """Shutdown operation. This will shut down (power off) the
-        specified virtual blades, or, if none are specified, all
-        virtual blades, in the provider, leaving them provisioned.
-
-        """
-
-    @abstractmethod
-    def startup(self, virtual_blade_names=None):
-        """Startup operation. This will start up (power on) the
-        specified virtual blades, or, if none are specified, all
-        virtual blades, in the provider as long as they are
-        provisioned.
-
-        """
-
-    @abstractmethod
-    def dismantle(self):
-        """Dismantle operation. This will de-provision all virtual
-        blades in the provider.
-
-        """
-
-    @abstractmethod
-    def restore(self):
-        """Restore operation. This will re-provision deprovisioned
-        virtual blades in the provider.
-
-        """
-
-    @abstractmethod
     def remove(self):
         """Remove operation. This will remove all resources
         provisioned for the provider layer.
