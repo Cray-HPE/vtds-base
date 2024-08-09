@@ -47,7 +47,8 @@ from .base_config import (
 
 from .template_operations import (
     render_template_file,
-    render_templated_tree
+    render_templated_tree,
+    render_command_string
 )
 
 from .stack import (
