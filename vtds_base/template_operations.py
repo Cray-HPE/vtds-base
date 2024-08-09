@@ -81,3 +81,21 @@ def render_templated_tree(patterns, data, build_dir):
         paths = glob("%s/**/%s" % (build_dir, pattern), recursive=True)
         for path in paths:
             render_template_file(path, data)
+
+
+def render_command_string(cmd, jinja_values):
+    """Render a command string (not a command list) as a Jinja
+    template with substitutions from the supplied jinja_values
+    dictionary.
+
+    """
+    try:
+        template = Template(cmd)
+        return template.render(**jinja_values)
+    except TemplateError as err:
+        raise ContextualError(
+            "error using Jinja to render command line '%s' - %s" % (
+                cmd,
+                str(err)
+            )
+        ) from err
