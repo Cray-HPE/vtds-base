@@ -25,7 +25,10 @@ access to the Platform API and prevents them from seeing the private
 implementation of the API.
 
 """
-from abc import ABCMeta
+from abc import (
+    ABCMeta,
+    abstractmethod
+)
 from ..layerapi import LayerAPI
 
 
@@ -33,3 +36,17 @@ class PlatformAPI(LayerAPI, metaclass=ABCMeta):
     """ Presents the Platform API to callers.
 
     """
+    @abstractmethod
+    def get_blade_venv_path(self):
+        """Return the file system path to the root of the shared blade
+        virtual environment created and managed by the Platform layer.
+
+        """
+
+    @abstractmethod
+    def get_blade_python_executable(self):
+        """Return the file system path to the executable python
+        interpreter within the shared blade virtual environment
+        created and managed by the Platform layer.
+
+        """
