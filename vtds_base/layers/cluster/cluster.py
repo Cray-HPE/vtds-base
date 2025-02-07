@@ -49,18 +49,3 @@ class ClusterAPI(LayerAPI, metaclass=ABCMeta):
         available VirtualNetworks.
 
         """
-
-    @abstractmethod
-    def get_node_venv_path(self):
-        """Return the file system path to the root of the shared blade
-        virtual environment created and managed by the Platform layer.
-
-        """
-
-    @abstractmethod
-    def get_node_python_executable(self):
-        """Return the file system path to the executable python
-        interpreter within the shared blade virtual environment
-        created and managed by the Platform layer.
-
-        """
