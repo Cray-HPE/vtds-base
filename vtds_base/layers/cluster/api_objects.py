@@ -50,6 +50,17 @@ class VirtualNodesBase(metaclass=ABCMeta):
         """
 
     @abstractmethod
+    def set_node_node_name(self, node_class, instance, name):
+        """When called during the 'prepare' phase by a higher layer,
+        this sets the contextual node name (i.e. the node name used on
+        the mechanism used to implement the Virtual Node, perhaps a
+        Virtual Machine) to be used for a given node instance in a
+        given node class to the specified name. This modifies the
+        configuration data used during the deploy and remove phases.
+
+        """
+
+    @abstractmethod
     def node_node_name(self, node_class, instance):
         """Get the node name (used for contextually naming the
         implementation of a Virtual Node) of a given Virtual Node
@@ -63,6 +74,16 @@ class VirtualNodesBase(metaclass=ABCMeta):
     def network_names(self, node_class):
         """Return the list of Network Names of the Networks connected
         to the specified class of Virtual Node.
+
+        """
+
+    @abstractmethod
+    def set_node_hostname(self, node_class, instance, name):
+        """When called during the 'prepare' phase by a higher layer,
+        this sets the network hostname to be used for a given node
+        instance in a given node class to the specified name. This
+        modifies the configuration data used during the deploy and
+        remove phases.
 
         """
 
