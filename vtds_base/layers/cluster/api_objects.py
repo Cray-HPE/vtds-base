@@ -50,6 +50,16 @@ class VirtualNodesBase(metaclass=ABCMeta):
         """
 
     @abstractmethod
+    def node_node_name(self, node_class, instance):
+        """Get the node name (used for contextually naming the
+        implementation of a Virtual Node) of a given Virtual Node
+        class instance (i.e. Virtual Node). This will also be the core
+        hostname (minus the network name) of the node if there is no
+        host naming specified in the configuration.
+
+        """
+
+    @abstractmethod
     def network_names(self, node_class):
         """Return the list of Network Names of the Networks connected
         to the specified class of Virtual Node.
