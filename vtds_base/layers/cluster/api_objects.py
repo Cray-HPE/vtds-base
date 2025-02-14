@@ -95,10 +95,10 @@ class VirtualNodesBase(metaclass=ABCMeta):
 
         """
 
-    def node_host_blade(self, node_class, instance):
-        """Get the host Virtual Blade identity from a a given Virtual
-        Node class instance (i.e. Virtual Node). This returns a
-        dictionary with the following two elements:
+    def node_host_blade_info(self, node_class):
+        """Get the host Virtual Blade class information from a a given
+        Virtual Node class instance (i.e. Virtual Node). This returns
+        a dictionary with the following elements:
 
         - blade_class: the name of the Virtual Blade class to which
           the blade belongs.
