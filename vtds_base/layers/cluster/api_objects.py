@@ -95,6 +95,19 @@ class VirtualNodesBase(metaclass=ABCMeta):
 
         """
 
+    def node_host_blade(self, node_class, instance):
+        """Get the host Virtual Blade identity from a a given Virtual
+        Node class instance (i.e. Virtual Node). This returns a
+        dictionary with the following two elements:
+
+        - blade_class: the name of the Virtual Blade class to which
+          the blade belongs.
+
+        - instance: the instance number of the Virtual Blade class
+          instance (Virtual Blade) that hosts the node.
+
+        """
+
     @abstractmethod
     def node_ipv4_addr(self, node_class, instance, network_name):
         """Get the configured IPv4 address (if any) for the specified
