@@ -103,8 +103,8 @@ class VirtualNodesBase(metaclass=ABCMeta):
         - blade_class: the name of the Virtual Blade class to which
           the blade belongs.
 
-        - instance: the instance number of the Virtual Blade class
-          instance (Virtual Blade) that hosts the node.
+        - instance_capacity: the maximum number of host instances that
+          will be created per blade.
 
         """
 
