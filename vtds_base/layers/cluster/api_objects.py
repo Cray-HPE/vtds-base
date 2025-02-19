@@ -212,7 +212,7 @@ class VirtualNetworksBase(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def application_metadata(self, node_class):
+    def application_metadata(self, network_name):
         """Get the application metadata for a named virtual network
         from its config.
 
