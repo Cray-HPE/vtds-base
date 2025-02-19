@@ -43,6 +43,13 @@ class VirtualNodesBase(metaclass=ABCMeta):
         """
 
     @abstractmethod
+    def application_metadata(self, node_class):
+        """Get the application metadata for a named node class from
+        its config.
+
+        """
+
+    @abstractmethod
     def node_count(self, node_class):
         """Get the number of Virtual Node instances of the specified
         class.
@@ -201,6 +208,13 @@ class VirtualNetworksBase(metaclass=ABCMeta):
     @abstractmethod
     def network_names(self):
         """Get a list of network names
+
+        """
+
+    @abstractmethod
+    def application_metadata(self, node_class):
+        """Get the application metadata for a named virtual network
+        from its config.
 
         """
 
