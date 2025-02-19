@@ -42,6 +42,13 @@ class VirtualBladesBase(metaclass=ABCMeta):
         """
 
     @abstractmethod
+    def application_metadata(self, blade_class):
+        """Get the application metadata for a named blade class from
+        its config.
+
+        """
+
+    @abstractmethod
     def blade_count(self, blade_class):
         """Get the number of Virtual Blade instances of the specified
         class.
@@ -165,6 +172,13 @@ class BladeInterconnectsBase(metaclass=ABCMeta):
     @abstractmethod
     def interconnect_names(self):
         """Get a list of blade interconnects by name
+
+        """
+
+    @abstractmethod
+    def application_metadata(self, interconnect_name):
+        """Get the application metadata for a named interconnect from
+        its config.
 
         """
 
@@ -526,5 +540,12 @@ class SecretsBase(metaclass=ABCMeta):
     def read(self, name):
         """Read the value (string) stored in a named secret. If no
         value is present, return None.
+
+        """
+
+    @abstractmethod
+    def application_metadata(self, name):
+        """Get the application metadata for a named secret from its
+        config.
 
         """
