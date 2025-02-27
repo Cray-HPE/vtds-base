@@ -127,6 +127,15 @@ class VirtualNodesBase(metaclass=ABCMeta):
         """
 
     @abstractmethod
+    def node_class_addressing(self, node_class, network_name):
+        """Obtain an Addressing object describing the addressing of
+        the specified node class within the named network. If the node
+        class has no addressing in (i.e. is not connected to) the
+        specified network, return None.
+
+        """
+
+    @abstractmethod
     def node_ssh_key_secret(self, node_class):
         """Return the name of the secret containing the SSH key pair
         used to to authenticate with Virtual Node of the specified
@@ -232,6 +241,15 @@ class VirtualNetworksBase(metaclass=ABCMeta):
         use by applications running on the cluster. Such a network is
         a 'non-cluster network'.  Return True if the specified network
         name refers to a non-cluster network otherwise return False.
+
+        """
+
+    @abstractmethod
+    def blade_class_addressing(self, blade_class, network_name):
+        """Obtain an Addressing object describing the addressing of
+        the specified connected blade class within the named
+        network. If the blade class has no addressing in (i.e. is not
+        connected to) the specified network, return None.
 
         """
 
@@ -468,5 +486,53 @@ class NodeSSHConnectionSetBase(NodeConnectionSetBase, metaclass=ABCMeta):
         standard output from the command and one that will contain the
         standard input. The paths to these files will be included in
         any error reporting from the operation.
+
+        """
+
+
+class AddressingBase(metaclass=ABCMeta):
+    """Addressing information for node and blade classes. This
+    contains all addressing by address family for instances of node
+    class or blade classes as assigned at the cluster level.
+
+    """
+    @abstractmethod
+    def address(self, family, instance):
+        """Retrieve the address within the address family specified by
+        the string 'family' (AF_INET, AF_INET6, AF_PACKET, or
+        whatever) of a specified instance number (integer) of the
+        object class (node class or blade class) and network from
+        which this Addressing object was obtained. The form of the
+        address will be a string formatted in the canonical way for
+        the specified address family.
+
+        """
+
+    @abstractmethod
+    def addresses(self, family):
+        """Retrieve a dictionary of instance number (integer) to
+        address (string) mapping pairs within the address family
+        specified by the string 'family' (AF_INET, AF_INET6,
+        AF_PACKET, or whatever) of the object class (node class or
+        blade class) and network from which this Addressing object was
+        obtained.
+
+        """
+
+    @abstractmethod
+    def address_families(self):
+        """Retrieve a list of address family names ('AF_INET',
+        'AF_INET6', 'AF_PACKET', or whatever) supported by the object
+        class (node class or blade class) and network from which this
+        Addressing object was obtained.
+
+        """
+
+    @abstractmethod
+    def instances(self):
+        """Retrieve a list of instance numbers within the object class
+        (node class or blade class) and network from which this
+        addressing object was created. Only instances that are
+        connected to the network are reported.
 
         """
