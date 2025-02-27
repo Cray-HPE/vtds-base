@@ -30,5 +30,6 @@ from .api_objects import (
     NodeConnectionBase,
     NodeConnectionSetBase,
     NodeSSHConnectionBase,
-    NodeSSHConnectionSetBase
+    NodeSSHConnectionSetBase,
+    AddressingBase
 )
