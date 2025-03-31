@@ -30,6 +30,59 @@ from abc import (
 )
 
 
+class SiteConfigBase(metaclass=ABCMeta):
+    """A class implementing public access to site configuration
+    settings.
+
+    """
+
+    @abstractmethod
+    def system_name(self):
+        """Get the system name used to create the cluster on the
+        provider. Returns a string representing the system name.
+
+        """
+
+    @abstractmethod
+    def site_ntp_servers(self, address_family='AF_INET'):
+        """Get the hostname / address of the NTP server offered by the
+        provider or site in the specified address family. The
+        'address_family' parameter is a string specifies the address
+        family of the address to be returned, with a default value of
+        'AF_INET'. Returns a list of dictionaries containing the
+        following fields:
+
+        - 'address_family' - the requested address family as passed in
+        - 'hostname' - the host name of the NTP server if known, None if not
+        - 'address' - the address within the address family of the NTP
+          server if known, None if not
+
+        Returns an empty list if the specified 'address_family' is not
+        supported by the provider or not configured in the Provider
+        configuration.
+
+        """
+
+    @abstractmethod
+    def site_dns_servers(self, address_family='AF_INET'):
+        """Get the address of the DNS server offered by the provider
+        or site on the specified address family. The address_family'
+        parameter is a string specifies the address family of the
+        address to be returned, with a default value of
+        'AF_INET'. Returns a list of dictionarie containing the
+        following fields:
+
+        - 'address_family' - the requested address family as passed in
+        - 'address' - the address within the address family of the NTP
+          server if known, None if not
+
+        Returns an empty list if the specified 'address_family' is not
+        supported by the provider or not configured in the Provider
+        configuration.
+
+        """
+
+
 class VirtualBladesBase(metaclass=ABCMeta):
     """A class implementing public access to Virtual Blades and their
     operations.

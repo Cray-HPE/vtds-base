@@ -56,3 +56,9 @@ class ProviderAPI(LayerAPI, metaclass=ABCMeta):
         available secrets.
 
         """
+
+    @abstractmethod
+    def get_site_config(self):
+        """Retrieve the SiteConfig API object from the Provider.
+
+        """
