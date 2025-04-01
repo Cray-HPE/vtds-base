@@ -188,6 +188,16 @@ class VTDSStack:
         self.__init_layer__("provider", self.provider, config, build_dir)
         self.config = config
 
+    def consolidate(self):
+        """Execute the stack 'consolidate' phase. This runs the
+        'consolidate()' method in each of the layers from the bottom
+        to the top to set up for any phases that rely on a fully
+        resolved configuration.
+
+        """
+        for api in self.__active_apis__():
+            api.consolidate()
+
     def prepare(self):
         """Execute the stack 'prepare' phase. This runs the
         'prepare()' method in each of the layers from the bottom to
@@ -261,7 +271,7 @@ class VTDSStack:
     def get_final_config(self):
         """Return the full configuration after all of the overlays
         have been applied that is given to the layers. This only works
-        after initialize() has been run...
+        after initialize() and consolidate() have been run...
 
         """
         if self.config is None:
