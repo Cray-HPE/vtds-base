@@ -24,6 +24,7 @@
 
 """
 from .api_objects import (
+    SiteConfigBase,
     VirtualBladesBase,
     BladeInterconnectsBase,
     BladeConnectionBase,
