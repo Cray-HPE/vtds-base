@@ -37,28 +37,39 @@ class LayerAPI(metaclass=ABCMeta):
 
     """
     @abstractmethod
+    def consolidate(self):
+        """Consolidate layer configurations, carrying out any actions
+        that might affect other layer configurations. At the end of
+        this phase, the overall configuration is fully specified and
+        ready for use by prepare and validate.
+
+        """
+
+    @abstractmethod
     def prepare(self):
-        """Prepare the provider for deployment.
+        """Prepare data files and other state needed for
+        deployment. At the end of this stage the layer is ready to be
+        displayed, validated, deployed or removed.
 
         """
 
     @abstractmethod
     def validate(self):
         """Run any configuration validation that may be appropriate
-        for the provider layer.
+        for the layer and fail if that validation
+        fails. Prerequisites: consolidate() and prepare().
 
         """
 
     @abstractmethod
     def deploy(self):
-        """Deploy the provider (must call prepare() prior to this
-        call.
+        """Deploy the layer. Prerequisites: consolidate() and prepare().
 
         """
 
     @abstractmethod
     def remove(self):
-        """Remove operation. This will remove all resources
-        provisioned for the provider layer.
+        """Remove respources owned by the layer. Prerequisites:
+        consolidate() and prepare().
 
         """
