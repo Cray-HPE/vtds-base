@@ -34,13 +34,14 @@ from jinja2 import (
 from .errors import ContextualError
 
 
-def render_template_file(path, data):
+def render_template_file(path, data, outpath=None):
     """Render the Jinja template found in 'path' using the parameters
         found in the dictionary supplied by 'data. The file supplied
         in 'path' is overwritten with the rendered template and not
         preserved anywhere.
 
     """
+    outpath = path if outpath is None else outpath
     try:
         with open(path, 'r', encoding="UTF-8") as template_file:
             template_data = template_file.read()
@@ -58,11 +59,11 @@ def render_template_file(path, data):
             (path, str(err))
         ) from err
     try:
-        with open(path, 'w', encoding="UTF-8") as output_file:
+        with open(outpath, 'w', encoding="UTF-8") as output_file:
             output_file.write(rendered)
     except OSError as err:
         raise ContextualError(
-            "cannot write Jinja template file %s: %s" % (
+            "cannot write Jinja output file %s: %s" % (
                 path, str(err)
             )
         ) from err
