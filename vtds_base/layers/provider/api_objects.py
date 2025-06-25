@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright [2024] Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -431,6 +431,7 @@ class BladeSSHConnectionBase(BladeConnectionBase, metaclass=ABCMeta):
         connection:
 
         - the blade class: 'blade_class'
+        - the blade class instance: 'instance'
         - the blade hostname: 'blade_hostname'
         - the connection port on the blade: 'remote_port'
         - the local connection IP address: 'local_ip'
