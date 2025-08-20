@@ -55,7 +55,7 @@ license = { file = 'LICENSE' }
 
 [project.optional-dependencies]
 build = [
-    'build~=1.2.2'
+    'build>=1.2.2,<1.4.0'
 ]
 ci = [
     'nox>=2023.4.22,<2025.6.0',
