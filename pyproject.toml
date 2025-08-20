@@ -91,7 +91,7 @@ exclude = ['vtds_base.tests*']
 build-backend = 'setuptools.build_meta'
 requires = [
     # setup tools - this comment reduces conflicts in dependabot PRs
-    'setuptools ~= 66.0',
+    'setuptools >= 66,< 81',
     # setup tools scm - this comment reduces conflicts in dependabot PRs
     'setuptools_scm[toml] >= 7.1,< 9.3',
     # wheel - this comment reduces conflicts in dependabot PRs
