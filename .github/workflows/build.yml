@@ -45,7 +45,7 @@ jobs:
         fetch-depth: 0 # Also fetch git-tags
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.version }}
 
