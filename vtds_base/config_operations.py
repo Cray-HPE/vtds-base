@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -37,27 +37,39 @@ def merge_configs(base, overlay):
     new configuration that is the merged configuration. Data in the
     overlay override the contents of the base as follows:
 
-    - Key / value pairs that exist in both and have scalar, list or
-      class values are completely taken from the overlay (base
-      content is discarded).
+    1) Key / value pairs that exist in both and have a value that is
+       not a 'dict' are completely replaced using the value from the
+       overlay (base content is discarded).
 
-    - Key / value pairs that exist in both and have dictionaries are
-      recursively merged using these rules.
+    5) If an overlay dictionary contains the reserved key / value pair
+      '__replace_dict': 'value' the specified 'value' (of any type)
+      completely replaces the dictionary found in the base.
 
-    - Key / value pairs found only in the base are taken from the base
+    2) Key / value pairs that exist in both and have dictionaries in
+       both are recursively merged
 
-    - Key value pairs found only in the overlay are taken from the
-      overlay.
+    3) Key / value pairs found only in the overlay are taken from the
+       overlay.
+
+    4) Key / value pairs found only in the base are taken from the base
 
     """
-    # If either the base or the overlay is not a dictionary, then the
-    # value going into the config at this layer (or the whole config
-    # if we are in the zero-th recursion) is simply the overlay.
+    # Rule 1: If either the base or the overlay is not a dictionary,
+    # then the value going into the config at this layer (or the whole
+    # config if we are in the zero-th recursion) is simply the
+    # overlay.
     if not isinstance(base, dict) or not isinstance(overlay, dict):
         return overlay
 
-    # Both are dictionaries, so we are going to merge them. Make a new
-    # dictionary to hold the merged configs at this level.
+    # Rule 2: Knowing the overlay is a dictionary, if it contains the
+    # key '__replace_dict' we are simply using the value in
+    # '__replace_dict' so return that.
+    if '__replace_dict' in overlay:
+        return overlay['__replace_dict']
+
+    # Rule 3: Both are simply dictionaries, so we are going to merge
+    # them. Make a new dictionary to hold the merged configs at this
+    # level.
     new_config = {}
 
     # Populate the new config with all of the items that are in the
@@ -67,8 +79,7 @@ def merge_configs(base, overlay):
             if key in overlay:
                 # Base has a dictionary and overlay has something,
                 # merge the two (if the overlay isn't a dictionary,
-                # the check at the beginning kicks in and returns the
-                # overlay value).
+                # Rule 1 kicks in and returns the overlay value).
                 new_config[key] = merge_configs(base[key], overlay[key])
                 continue
             # Base has a dictionary, but the overlay has nothing, keep
@@ -77,10 +88,10 @@ def merge_configs(base, overlay):
             continue
         # Not a dictionary, overwrite from the overlay?
         if key in overlay:
-            # Yep! Take the overlay value
+            # Yep! Rule 3, take the overlay value
             new_config[key] = overlay[key]
             continue
-        # Nope. Keep the base value
+        # Nope. Rule 4, Keep the base value
         new_config[key] = value
 
     # Now, go through the overlay and catch any keys that aren't in
