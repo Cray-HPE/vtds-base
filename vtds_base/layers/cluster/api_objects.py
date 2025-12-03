@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright [2024] Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -102,6 +102,7 @@ class VirtualNodesBase(metaclass=ABCMeta):
 
         """
 
+    @abstractmethod
     def node_host_blade_info(self, node_class):
         """Get the host Virtual Blade class information from a a given
         Virtual Node class instance (i.e. Virtual Node). This returns
@@ -241,6 +242,15 @@ class VirtualNetworksBase(metaclass=ABCMeta):
         use by applications running on the cluster. Such a network is
         a 'non-cluster network'.  Return True if the specified network
         name refers to a non-cluster network otherwise return False.
+
+        """
+
+    @abstractmethod
+    def blade_interconnect(self, network_name):
+        """Obtain the name of the blade interconnect carrying the
+        named network. If the network is not carried on a blade
+        interconnect (this is the case for blade local networks, for
+        example) return None
 
         """
 
