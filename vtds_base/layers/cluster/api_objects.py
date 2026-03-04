@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2026 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -350,6 +350,9 @@ class NodeSSHConnectionBase(NodeConnectionBase, metaclass=ABCMeta):
         they may be used to override defaults set up by this function
         and passed to subprocess.Popen() or simply passed on to
         subprocess.Popen() as keyword arguments.
+
+        Create the parent directory structure containing the file as
+        needed on the virtual blade.
 
         If the 'recurse' argument is 'True' and the source is a
         directory, the directory and all of its descendents will be
